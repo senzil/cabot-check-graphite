@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from cabot.cabotapp.tests.tests_basic import LocalTestCase
 from cabot.cabotapp.models import StatusCheck, Instance
 from cabot.plugins.models import StatusCheckPluginModel
-from cabot_check_graphite.plugin import GraphiteStatusCheckPlugin
+from cabot_check_graphite.plugin import GraphiteStatusCheckPlugin, minimize_targets
 from cabot.cabotapp.models import Service, StatusCheckResult
 from mock import Mock, patch
 import os
@@ -157,4 +157,42 @@ class TestGraphiteCheckCheckPlugin(LocalTestCase):
         self.assertEqual(len(checkresults), 1)
         self.assertTrue(self.graphite_check.last_result().succeeded)
         self.assertGreater(list(checkresults)[-1].took, 0.0)
+
+class TestMinimizeTargets(LocalTestCase):
+    def test_null(self):
+        result = minimize_targets([])
+        self.assertEqual(result, [])
+
+    def test_all_same(self):
+        result = minimize_targets(["a", "a"])
+        self.assertEqual(result, ["a", "a"])
+
+    def test_all_different(self):
+        result = minimize_targets(["a", "b"])
+        self.assertEqual(result, ["a", "b"])
+
+    def test_same_prefix(self):
+        result = minimize_targets(["prefix.a", "prefix.b"])
+        self.assertEqual(result, ["a", "b"])
+
+        result = minimize_targets(["prefix.second.a", "prefix.second.b"])
+        self.assertEqual(result, ["a", "b"])
+
+    def test_same_suffix(self):
+        result = minimize_targets(["a.suffix", "b.suffix"])
+        self.assertEqual(result, ["a", "b"])
+
+        result = minimize_targets(["a.suffix.suffix", "b.suffix.suffix"])
+        self.assertEqual(result, ["a", "b"])
+
+        result = minimize_targets(["a.b.suffix.suffix", "b.c.suffix.suffix"])
+        self.assertEqual(result, ["a.b", "b.c"])
+
+    def test_same_prefix_and_suffix(self):
+        result = minimize_targets(["prefix.a.suffix", "prefix.b.suffix"])
+        self.assertEqual(result, ["a", "b"])
+
+        result = minimize_targets(["prefix.prefix.a.suffix.suffix",
+                                   "prefix.prefix.b.suffix.suffix",])
+        self.assertEqual(result, ["a", "b"])
 

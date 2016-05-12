@@ -120,7 +120,7 @@ class GraphiteStatusCheckPlugin(StatusCheckPlugin):
 
         if not result.succeeded:
             targets = [s["target"] for s in graphite_output["series"]]
-            hosts = self.minimize_targets(targets)
+            hosts = minimize_targets(targets)
             hosts_by_target = dict(zip(targets, hosts))
 
             result.error = self.format_error_message(
@@ -132,23 +132,23 @@ class GraphiteStatusCheckPlugin(StatusCheckPlugin):
 
         return result
 
-    def minimize_targets(self, targets):
-	split = [target.split(".") for target in targets]
+def minimize_targets(targets):
+    split = [target.split(".") for target in targets]
 
-	prefix_nodes_in_common = 0
-	for i, nodes in enumerate(itertools.izip(*split)):
-	    if any(node != nodes[0] for node in nodes):
-		prefix_nodes_in_common = i
-		break
-	split = [nodes[prefix_nodes_in_common:] for nodes in split]
+    prefix_nodes_in_common = 0
+    for i, nodes in enumerate(itertools.izip(*split)):
+        if any(node != nodes[0] for node in nodes):
+            prefix_nodes_in_common = i
+            break
+    split = [nodes[prefix_nodes_in_common:] for nodes in split]
 
-	suffix_nodes_in_common = 0
-	for i, nodes in enumerate(reversed(zip(*split))):
-	    if any(node != nodes[0] for node in nodes):
-		suffix_nodes_in_common = i
-		break
-	if suffix_nodes_in_common:
-	    split = [nodes[:-suffix_nodes_in_common] for nodes in split]
+    suffix_nodes_in_common = 0
+    for i, nodes in enumerate(reversed(zip(*split))):
+        if any(node != nodes[0] for node in nodes):
+            suffix_nodes_in_common = i
+            break
+    if suffix_nodes_in_common:
+        split = [nodes[:-suffix_nodes_in_common] for nodes in split]
 
-	return [".".join(nodes) for nodes in split]
+    return [".".join(nodes) for nodes in split]
 
