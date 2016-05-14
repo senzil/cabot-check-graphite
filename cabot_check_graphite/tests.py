@@ -54,7 +54,7 @@ class TestGraphiteCheckCheckPlugin(LocalTestCase):
         super(TestGraphiteCheckCheckPlugin, self).setUp()
 
         self.graphite_check_model, created = StatusCheckPluginModel.objects.get_or_create(
-	    slug='graphite-check'
+	    slug='cabot_check_graphite'
 	    )
 
         self.graphite_check = StatusCheck.objects.create(

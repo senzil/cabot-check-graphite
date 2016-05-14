@@ -32,7 +32,7 @@ class GraphiteStatusCheckForm(forms.Form):
     check_type = forms.ChoiceField(
         choices=CHECK_TYPES,
     )
-    value = forms.IntegerField(
+    value = forms.CharField(
         help_text='If this expression evaluates to true, the check will fail (possibly triggering an alert).',
     )
     expected_num_hosts = forms.IntegerField(
@@ -47,7 +47,7 @@ class GraphiteStatusCheckForm(forms.Form):
 
 class GraphiteStatusCheckPlugin(StatusCheckPlugin):
     name = "Graphite"
-    slug = "graphite-check"
+    slug = "cabot_check_graphite"
     author = "Jonathan Balls"
     version = "0.0.1"
     font_icon = "glyphicon glyphicon-signal"
