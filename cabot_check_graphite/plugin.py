@@ -38,10 +38,12 @@ class GraphiteStatusCheckForm(forms.Form):
     expected_num_hosts = forms.IntegerField(
         initial=0,
         help_text='The minimum number of data series (hosts) you expect to see.',
+        required=False,
     )
     allowed_num_failures = forms.IntegerField(
         initial=0,
         help_text='The maximum number of data series (metrics) you expect to fail. For example, you might be OK with 2 out of 3 webservers having OK load (1 failing), but not 1 out of 3 (2 failing).',
+        required=False,
     )
 
 
