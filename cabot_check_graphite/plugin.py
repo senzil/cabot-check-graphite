@@ -56,6 +56,13 @@ class GraphiteStatusCheckPlugin(StatusCheckPlugin):
 
     config_form = GraphiteStatusCheckForm
 
+    plugin_variables = [
+        'GRAPHITE_API',
+        'GRAPHITE_USER',
+        'GRAPHITE_PASS',
+        'GRAPHITE_FROM'
+    ]
+
     def format_error_message(self, check, failures, actual_hosts, hosts_by_target):
         if actual_hosts < check.expected_num_hosts:
             return "Hosts missing | %d/%d hosts" % (
