@@ -28,12 +28,23 @@ CHECK_TYPES = (
 class GraphiteStatusCheckForm(forms.Form):
     metric = forms.CharField(
         help_text='fully.qualified.name of the Graphite metric you want to watch. This can be any valid Graphite expression, including wildcards, multiple hosts, etc.',
+        widget = forms.TextInput(attrs={
+            'style': 'width: 100%',
+            'placeholder': 'graphite metric key'
+        }),
     )
     check_type = forms.ChoiceField(
-        choices=CHECK_TYPES,
+        choices = CHECK_TYPES,
+        widget = forms.Select(attrs={
+            'data-rel': 'chosen',
+        }),
     )
     value = forms.CharField(
         help_text='If this expression evaluates to true, the check will fail (possibly triggering an alert).',
+        widget = forms.TextInput(attrs={
+            'style': '100px',
+            'placeholder': 'threshold value',
+        }),
     )
     expected_num_hosts = forms.IntegerField(
         initial=0,
